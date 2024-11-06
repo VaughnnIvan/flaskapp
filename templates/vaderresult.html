@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>
+Sentiment Analysis and Response Statistics
+</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Sentiment Analysis and Response Summary</h1>
+    
+ 
+        <!-- Canvas to display the sentiment bar chart -->
+      
+            <canvas id="sentimentChart" width="400" height="50"></canvas>
+       
+
+        <!-- Big text to display the average answer from the responses table -->
+    
+   
+    <div class="ml-5 d-flex flex-column align-items-center">
+        <span class="display-4">Rating average</span>
+        <span id="averageAnswerText" class="display-5">{{ average_answer }}</span>
+        <span id="Totalresponses" class="display-6">Total responses: {{ num_inputs }}</span>
+    </div>
+
+    <div class="d-flex align-items-center mt-3" id="imageContainer">
+        <img id="sentimentImage" alt="" class="mr-3" style="width: 200px;">
+        <span id="sentimentText" class="h5"></span>
+        <span id="additionalText" class="ml-5"></span>
+    </div>
+
+    <script>
+        // The average compound score passed from Flask
+        var averageScore = {{ average_score|tojson|safe }};
+        var averageAnswer = {{ average_answer|tojson|safe }};
+
+        // Setup the bar chart to display the average sentiment score
+        var ctx = document.getElementById('sentimentChart').getContext('2d');
+        var sentimentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Average Sentiment Score'],  // Only one label
+                datasets: [{
+                    label: 'Sentiment Score',
+                    data: [averageScore],  // Only one data point
+                    backgroundColor: averageScore >= 0 ? 'rgba(39, 114, 245, 1)' : 'rgba(255, 99, 132, 1)',
+                    borderColor: averageScore >= 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    y: {
+                        display: false // Hides the X axis
+            },
+                    x: {
+                        beginAtZero: true,
+                        min: -1.0, 
+                        max: 1.0
+                    }
+                }
+            }
+        });
+
+        // Display an image and text based on whether the sentiment is positive or negative
+        var img = document.getElementById('sentimentImage');
+        var stext = document.getElementById('sentimentText');
+        var atext = document.getElementById('additionalText');
+
+        if (averageScore > 0) {
+            img.src = '/static/above.png';  
+            img.alt = 'Positive Sentiment';
+            stext.innerText = 'Overall sentiment is positive!';
+            atext.innerText = `Average Score: ${averageScore.toFixed(2)}`;
+        } else {
+            img.src = '/static/below.png';  
+            img.alt = 'Negative Sentiment';
+            stext.innerText = 'The overall sentiment seems to be negative...';
+            atext.innerText = `Average Score: ${averageScore.toFixed(2)}`;
+        }
+
+        // Update the average answer text element
+        document.getElementById('averageAnswerText').innerText = averageAnswer.toFixed(2);
+        document.getElementById('Totalresponses').innerText = num_inputs.toFixed(2);
+    </script>
+{% endblock %}

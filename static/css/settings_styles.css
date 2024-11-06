@@ -1,0 +1,45 @@
+body {
+    background-color: #f8f9fa;
+}
+.settings-container {
+    display: flex;
+    min-height: 100vh;
+}
+.settings-sidebar {
+    background-color: #ffffff;
+    width: 250px;
+    padding-top: 1rem;
+    border-right: 1px solid #dee2e6;
+}
+.settings-sidebar a {
+    color: #007bff;
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    display: block;
+    font-size: 1rem;
+}
+.settings-sidebar a:hover, .settings-sidebar a.active {
+    background-color: #007bff;
+    color: #ffffff;
+}
+.settings-content {
+    flex: 1;
+    padding: 2rem;
+}
+.settings-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 1rem;
+}
+
+.dropdown-menu a {
+    padding-left: 20px; /* Indent submenu items */
+    font-size: 0.9em;
+    display: block;
+    color: #555;
+}
+
+.dropdown-menu a:hover {
+    background-color: #e0e0e0;
+}

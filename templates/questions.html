@@ -1,0 +1,159 @@
+{% extends 'settingsbase.html' %}
+
+{% block title %}
+<title>
+Sentiment Analysis and Response Statistics
+</title>
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal_content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .close {
+        color: #181818;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    button {
+        background-color: #4487c5;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    #deleteButton {
+        background-color: #b42d2d;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #447cb1;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        max-width: 500px;
+        padding: 10px;
+        margin-top: 8px;
+        margin-bottom: 20px;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h4>A. Commitment</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Select</th>
+            <th>Text</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for question in questions %}
+        <tr>
+            <td><input type="radio" name="selected_question" value="{{ question.id }}"></td>
+            <td>{{ question.text }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div style="text-align: center;">
+<button id="addButton">Add</button>
+<form id="deleteForm" method="POST" action="{{ url_for('questions.delete_question') }}">
+    <input type="hidden" name="selected_question_id" id="selected_question_id">
+    <button type="submit" id="deleteButton" disabled>Delete</button>
+</form>
+</div>
+
+<div id="questionFormModal" class="modal">
+    <div class="modal-content"></div>
+    <span class="close">&times;</span>
+    <form id="questionForm" method="POST">
+        <div style="text-align: center;">
+        <input type="text" name="question_text" placeholder="Here">
+        </div> 
+        <div style="text-align: center;">
+        <button type="submit">Save</button>
+    </div>
+    </form>
+</div>
+</div>
+
+<script>
+    document.querySelectorAll('input[name="selected_question"]').forEach((radio) => {
+        radio.addEventListener('change', () => {
+            document.getElementById('deleteButton').disabled = false;
+            document.getElementById('selected_question_id').value = radio.value;
+        });
+    });
+
+    document.getElementById('addButton').addEventListener('click', () => {
+        document.getElementById('questionForm').action = "/addquestion";
+        document.getElementById('questionFormModal').style.display = 'block';
+    });
+
+    var modal = document.getElementById("questionFormModal");
+
+    var addButton = document.getElementById("addButton");
+
+    var span = document.getElementsByClassName("close")[0];
+
+    addButton.onclick = function() {
+        modal.style.display = "block";
+    }
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+{% endblock %}
