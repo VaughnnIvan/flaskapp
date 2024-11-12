@@ -4,6 +4,8 @@ from vader.blueprint import vader
 from views import views
 from questions import questions
 from fclty import fclty
+from pgrm import prgrms
+from college import college
 from models import InputData
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -26,5 +28,6 @@ app.register_blueprint(vader, url_prefix='/vader')
 app.register_blueprint(views)
 app.register_blueprint(questions)
 app.register_blueprint(fclty)
-
+app.register_blueprint(prgrms)
+app.register_blueprint(college)
 

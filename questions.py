@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, Blueprint, url_for, flash, session
-from models import db, InputData, User, Question, QuestionB, QuestionC, QuestionD, Responses, College, Campus, Prgrms, Fclty
+from models import db, Question, QuestionB, QuestionC, QuestionD
 
 questions = Blueprint('questions', __name__,)
 

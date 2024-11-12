@@ -18,9 +18,10 @@
         <h4 class="text-center">Settings</h4>
         <hr>
         <a href="{{ url_for('views.index') }}" class="active">Back</a>
-        <a href="{{ url_for('questions.show_questiond') }}">Account</a>
-        <a href="{{ url_for('questions.show_questionc') }}">Privacy</a>
-        <a href="{{ url_for('fclty.show_fclty') }}">Notifications</a>
+        <a href="{{ url_for('college.show_college') }}">Edit List of Colleges</a>
+        <a href="{{ url_for('prgrm.show_pgrm') }}">Edit List of Programs</a>
+        <a href="{{ url_for('fclty.show_fclty') }}">Edit List of Faculty
+        </a>
         <div class="dropdown">
             <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event)">Edit Questions</a>
             <div class="dropdown-menu" style="display: none;">
