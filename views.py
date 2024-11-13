@@ -144,7 +144,7 @@ def submit():
     if 'user_id' not in session:
         return redirect(url_for('views.slee'))
     else:
-        return redirect(url_for('/'))
+        return redirect('/')
 
 @views.route('/analyze_sentiment', methods=['GET'])
 def analyze_sentiment():
@@ -175,27 +175,68 @@ def analyze_sentiment():
 def settings():
     return render_template('settingsbase.html')
 
+from sqlalchemy import func
+
 @views.route('/faculty-averages')
 def faculty_averages():
-    # Query to calculate the average 'answer' for each 'faculty' using SQLAlchemy
+    # First, get the total number of responses for each faculty (ignoring the qletter for now)
+    faculty_counts = db.session.query(
+        Responses.faculty,
+        func.count(Responses.id).label('response_count')  # Count the number of responses per faculty
+    ).group_by(Responses.faculty).all()
+
+    # Query to calculate the average 'answer' for each 'faculty' and qletter (A, B, C, D)
     averages = db.session.query(
         Responses.faculty,
+        Responses.qletter,
         func.avg(Responses.answer).label('average_answer')
-    ).group_by(Responses.faculty).order_by(func.avg(Responses.answer).desc()).all()
-    
-    # Convert results to a dictionary format for passing to the template
-    data = [{'faculty': faculty, 'average_answer': round(avg, 2)} for faculty, avg in averages]
+    ).filter(
+        Responses.qletter.in_(['A', 'B', 'C', 'D'])
+    ).group_by(
+        Responses.faculty, Responses.qletter
+    ).order_by(
+        Responses.faculty, Responses.qletter
+    ).all()
 
-    # Render template with data
+    # Create a dictionary to store results by faculty
+    faculty_averages = {}
+
+    # First, initialize the faculty averages with empty data
+    for faculty, _ in faculty_counts:
+        faculty_averages[faculty] = {
+            'A': None, 'B': None, 'C': None, 'D': None, 'total': 0  # Initialize with None for letters
+        }
+
+    # Now, populate the average for each letter (A, B, C, D)
+    for faculty, qletter, avg in averages:
+        faculty_averages[faculty][qletter] = round(avg, 2)
+
+    # Calculate total responses (total instances) for each faculty
+    for faculty, response_count in faculty_counts:
+        total_instances = response_count // 21  # Divide by 21 to get the number of instances
+        faculty_averages[faculty]['total'] = total_instances
+
+    # Convert the dictionary into a list of dictionaries for the template
+    data = []
+    for faculty, averages in faculty_averages.items():
+        data.append({
+            'faculty': faculty,
+            'A': averages['A'],
+            'B': averages['B'],
+            'C': averages['C'],
+            'D': averages['D'],
+            'total': averages['total']  # Total is now the number of instances of 21 responses
+        })
+
+    # Render the template with the structured data
     return render_template('viewresult.html', data=data)
+
 
 @views.route('/clear_data', methods=['POST'])
 def clear_data():
     try:
-        # Clear all rows in the responses table
         db.session.query(Responses).delete()
-        
-        # Clear all rows in the input_data table (uncomment if table exists)
+
         db.session.query(InputData).delete()
         
         db.session.commit()
@@ -204,5 +245,4 @@ def clear_data():
         db.session.rollback()
         flash(f"Error clearing data: {e}", "danger")
     
-    # Redirect to the settings page or any other page
     return redirect(url_for('views.settings'))

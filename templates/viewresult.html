@@ -7,18 +7,26 @@
         <thead>
             <tr>
                 <th>Faculty</th>
-                <th>Average</th>
+                <th>Average of (A. Commitment)</th>
+                <th>Average of (B. Knowledge of Subject)</th>
+                <th>Average of (C. Teaching for Independent Learning)</th>
+                <th>Average of (D. Management of Learning)</th>
+                <th>No. of Responses</th>
             </tr>
         </thead>
         <tbody>
             {% for row in data %}
             <tr>
                 <td>{{ row['faculty'] }}</td>
-                <td>{{ row['average_answer'] }}</td>
+                <td>{{ row['A'] }}</td>
+                <td>{{ row['B'] }}</td>
+                <td>{{ row['C'] }}</td>
+                <td>{{ row['D'] }}</td>
+                <td>{{ row['total'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </body>
-</html>
+
 {% endblock %}
