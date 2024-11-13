@@ -76,7 +76,8 @@
 
        <!-- SEPARATE -->
        <hr style="border: 10px solid #72281e; margin: 10px 0; border-radius: 10px;">
-
+       <h6>Please evaluate your subject instructor/professor objectively using the scale below.</h6>
+       <img src="static/scale.png" alt="Scale" class="img-fluid rounded">
       <h4>A. Commitment</h4>
 
       {% for question in questions %}
@@ -168,6 +169,7 @@
       
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <a href="/login" class="d-block text-center mt-2" style="font-size: 0.8rem; color: #acacac;">Login</a>
   </div>
 {% endblock %}
 </body>

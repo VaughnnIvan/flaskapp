@@ -18,6 +18,7 @@
         <h4 class="text-center">Settings</h4>
         <hr>
         <a href="{{ url_for('views.index') }}" class="active">Back</a>
+        <a href="{{ url_for('campus.show_campus') }}">Edit List of Campus</a>
         <a href="{{ url_for('college.show_college') }}">Edit List of Colleges</a>
         <a href="{{ url_for('prgrm.show_pgrm') }}">Edit List of Programs</a>
         <a href="{{ url_for('fclty.show_fclty') }}">Edit List of Faculty
@@ -31,6 +32,19 @@
                 <a href="{{ url_for('questions.show_questiond') }}">Question Set D</a>
             </div>
         </div>
+        <div class="text-center mt-5">
+            <form action="{{ url_for('views.clear_data') }}" method="POST" onsubmit="return confirmDeletion();">
+                <button type="submit" class="btn btn-danger">
+                    Clear All Responses Data
+                </button>
+            </form>
+        </div>
+        
+        <script>
+            function confirmDeletion() {
+                return confirm("This will delete all saved responses. Do you wish to continue?");
+            }
+        </script>
     </div>
 
 

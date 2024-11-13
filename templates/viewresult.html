@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+    <h1>Faculty Average Rating</h1>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Faculty</th>
+                <th>Average</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row['faculty'] }}</td>
+                <td>{{ row['average_answer'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock %}

@@ -4,6 +4,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, EqualTo
+from sqlalchemy import func
 
 
 analyzer = SentimentIntensityAnalyzer()
@@ -46,7 +47,7 @@ def login():
 def register():
     if 'user_id' not in session:
         flash('Please log in first', 'warning')
-        return redirect(url_for('views.login'))
+        return redirect(url_for('views.slee'))
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -78,13 +79,13 @@ def logout():
     # Clear the session or perform any necessary logout logic
     session.clear()  # Clears the session
     flash('You have been logged out successfully.', 'success')
-    return redirect(url_for('views.login')) 
+    return redirect(url_for('views.slee')) 
 
 @views.route('/')
 def index():
     if 'user_id' not in session:
         flash('Please log in first', 'warning')
-        return redirect(url_for('views.login'))
+        return redirect(url_for('views.slee'))
     questions = Question.query.all()
     questionsb = QuestionB.query.all()
     questionsc = QuestionC.query.all()
@@ -143,13 +144,13 @@ def submit():
     if 'user_id' not in session:
         return redirect(url_for('views.slee'))
     else:
-        return redirect('/')
+        return redirect(url_for('/'))
 
 @views.route('/analyze_sentiment', methods=['GET'])
 def analyze_sentiment():
     if 'user_id' not in session:
         flash('Please log in first', 'warning')
-        return redirect(url_for('views.login'))
+        return redirect(url_for('views.slee'))
     all_inputs = InputData.query.all()
     all_responses = Responses.query.all()
 
@@ -173,3 +174,35 @@ def analyze_sentiment():
 @views.route('/settings')
 def settings():
     return render_template('settingsbase.html')
+
+@views.route('/faculty-averages')
+def faculty_averages():
+    # Query to calculate the average 'answer' for each 'faculty' using SQLAlchemy
+    averages = db.session.query(
+        Responses.faculty,
+        func.avg(Responses.answer).label('average_answer')
+    ).group_by(Responses.faculty).order_by(func.avg(Responses.answer).desc()).all()
+    
+    # Convert results to a dictionary format for passing to the template
+    data = [{'faculty': faculty, 'average_answer': round(avg, 2)} for faculty, avg in averages]
+
+    # Render template with data
+    return render_template('viewresult.html', data=data)
+
+@views.route('/clear_data', methods=['POST'])
+def clear_data():
+    try:
+        # Clear all rows in the responses table
+        db.session.query(Responses).delete()
+        
+        # Clear all rows in the input_data table (uncomment if table exists)
+        db.session.query(InputData).delete()
+        
+        db.session.commit()
+        flash("All data has been cleared successfully.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error clearing data: {e}", "danger")
+    
+    # Redirect to the settings page or any other page
+    return redirect(url_for('views.settings'))
