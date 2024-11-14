@@ -14,13 +14,11 @@ Sentiment Analysis and Response Statistics
         <span id="sentimentText" class="h5"></span>
         <span id="additionalText" class="ml-5"></span>
     </div>
-        <!-- Canvas to display the sentiment bar chart -->
       
             <canvas id="sentimentChart" width="400" height="50"></canvas>
        
 
-        <!-- Big text to display the average answer from the responses table -->
-    
+        
    
     <div class="ml-5 d-flex flex-column align-items-center">
         <span class="display-4">Rating average</span>
@@ -29,19 +27,17 @@ Sentiment Analysis and Response Statistics
     </div>
 
     <script>
-        // The average compound score passed from Flask
         var averageScore = {{ average_score|tojson|safe }};
         var averageAnswer = {{ average_answer|tojson|safe }};
 
-        // Setup the bar chart to display the average sentiment score
         var ctx = document.getElementById('sentimentChart').getContext('2d');
         var sentimentChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Average Sentiment Score'],  // Only one label
+                labels: ['Average Sentiment Score'], 
                 datasets: [{
                     label: 'Sentiment Score',
-                    data: [averageScore],  // Only one data point
+                    data: [averageScore],  
                     backgroundColor: averageScore >= 0 ? 'rgba(39, 114, 245, 1)' : 'rgba(255, 99, 132, 1)',
                     borderColor: averageScore >= 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
                     borderWidth: 0
@@ -51,7 +47,7 @@ Sentiment Analysis and Response Statistics
                 indexAxis: 'y',
                 scales: {
                     y: {
-                        display: false // Hides the X axis
+                        display: false 
             },
                     x: {
                         beginAtZero: true,
@@ -62,7 +58,6 @@ Sentiment Analysis and Response Statistics
             }
         });
 
-        // Display an image and text based on whether the sentiment is positive or negative
         var img = document.getElementById('sentimentImage');
         var stext = document.getElementById('sentimentText');
 
@@ -89,7 +84,6 @@ Sentiment Analysis and Response Statistics
 }
 
 
-        // Update the average answer text element
         document.getElementById('averageAnswerText').innerText = averageAnswer.toFixed(2);
         document.getElementById('Totalresponses').innerText = num_inputs.toFixed(2);
     </script>

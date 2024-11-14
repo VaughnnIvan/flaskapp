@@ -30,18 +30,16 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
-        # Query for the admin user
         user = User.query.filter_by(username=username).first()
 
-        # Check if the user exists and the password is correct
         if user and user.check_password(password):
-            session['user_id'] = user.id  # Store user ID in session for logged-in state
+            session['user_id'] = user.id
             flash('Logged in successfully', 'success')
-            return redirect(url_for('views.index'))  # Redirect to admin dashboard
+            return redirect(url_for('views.index'))
         else:
             flash('Invalid username or password', 'danger')
             
-    return render_template('login.html')  # Render the login page
+    return render_template('login.html')
 
 @views.route('/register', methods=['GET', 'POST'])
 def register():
@@ -53,19 +51,16 @@ def register():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
         
-        # Check if passwords match
         if password != confirm_password:
             flash('Passwords do not match', 'danger')
             return redirect(url_for('views.register'))
         
-        # Check if the username already exists
         if User.query.filter_by(username=username).first():
             flash('Username already exists', 'danger')
             return redirect(url_for('views.register'))
         
-        # Create new user
         new_user = User(username=username)
-        new_user.set_password(password)  # Hashes and sets the password
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
         
@@ -76,8 +71,7 @@ def register():
 
 @views.route('/logout')
 def logout():
-    # Clear the session or perform any necessary logout logic
-    session.clear()  # Clears the session
+    session.clear() 
     flash('You have been logged out successfully.', 'success')
     return redirect(url_for('views.slee')) 
 
@@ -179,13 +173,11 @@ from sqlalchemy import func
 
 @views.route('/faculty-averages')
 def faculty_averages():
-    # First, get the total number of responses for each faculty (ignoring the qletter for now)
     faculty_counts = db.session.query(
         Responses.faculty,
-        func.count(Responses.id).label('response_count')  # Count the number of responses per faculty
+        func.count(Responses.id).label('response_count')  
     ).group_by(Responses.faculty).all()
 
-    # Query to calculate the average 'answer' for each 'faculty' and qletter (A, B, C, D)
     averages = db.session.query(
         Responses.faculty,
         Responses.qletter,
@@ -198,25 +190,20 @@ def faculty_averages():
         Responses.faculty, Responses.qletter
     ).all()
 
-    # Create a dictionary to store results by faculty
     faculty_averages = {}
 
-    # First, initialize the faculty averages with empty data
     for faculty, _ in faculty_counts:
         faculty_averages[faculty] = {
-            'A': None, 'B': None, 'C': None, 'D': None, 'total': 0  # Initialize with None for letters
+            'A': None, 'B': None, 'C': None, 'D': None, 'total': 0 
         }
 
-    # Now, populate the average for each letter (A, B, C, D)
     for faculty, qletter, avg in averages:
         faculty_averages[faculty][qletter] = round(avg, 2)
 
-    # Calculate total responses (total instances) for each faculty
     for faculty, response_count in faculty_counts:
-        total_instances = response_count // 21  # Divide by 21 to get the number of instances
+        total_instances = response_count // 21 
         faculty_averages[faculty]['total'] = total_instances
 
-    # Convert the dictionary into a list of dictionaries for the template
     data = []
     for faculty, averages in faculty_averages.items():
         data.append({
@@ -225,12 +212,10 @@ def faculty_averages():
             'B': averages['B'],
             'C': averages['C'],
             'D': averages['D'],
-            'total': averages['total']  # Total is now the number of instances of 21 responses
+            'total': averages['total'] 
         })
 
-    # Render the template with the structured data
     return render_template('viewresult.html', data=data)
-
 
 @views.route('/clear_data', methods=['POST'])
 def clear_data():
