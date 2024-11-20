@@ -8,7 +8,7 @@
 
 {% block content %}
  <div class="container mt-5">
-    <h2>Survey Form</h2>
+    <h2>Survey Form - Student Learning Experience Evaluation</h2>
     <form action="/submit" method="POST">
       
       <div class="mb-3">
@@ -17,12 +17,12 @@
       </div>
 
       <div class="mb-3">
-        <label for="idnumber" class="form-label">ID Number</label>
+        <label for="idnumber" class="form-label"><strong>ID Number</strong></label>
         <input type="text" class="form-control" id="idnumber" name="idnumber">
       </div>
 
       <div class="mb-3">
-        <label for="campus" class="form-label">Campus</label>
+        <label for="campus" class="form-label"><strong>Campus</strong></label>
         <select class="form-select" aria-label="Default select example" id="campus" name="campus" required>
           <option selected>Open this select menu</option>
           {% for campus in campus %}
@@ -32,7 +32,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="college" class="form-label">College/Department</label>
+        <label for="college" class="form-label"><strong>College/Department</strong></label>
         <select class="form-select" aria-label="Default select example" id="college" name="college" required>
             <option selected disabled>Open this select menu</option>
             {% for college in colleges %}
@@ -41,7 +41,7 @@
         </select>
     </div>
       <div class="mb-3">
-        <label for="program" class="form-label">Program</label>
+        <label for="program" class="form-label"><strong>Program</strong></label>
         <select class="form-select" aria-label="Default select example" id="program" name="program" required>
           <option selected>Open this select menu</option>
           {% for program in program %}
@@ -51,7 +51,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="year" class="form-label">Year Level</label>
+        <label for="year" class="form-label"><strong>Year Level</strong></label>
         <select class="form-select" aria-label="Default select example" id="year" name="year" required>
           <option selected>Open this select menu</option>
           <option>I</option>
@@ -62,7 +62,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="faculty" class="form-label">Faculty</label>
+        <label for="faculty" class="form-label"><strong>Faculty</strong></label>
         <select class="form-select" aria-label="Default select example" id="faculty" name="faculty" required>
           <option selected>Open this select menu</option>
           {% for faculty in faculty %}
